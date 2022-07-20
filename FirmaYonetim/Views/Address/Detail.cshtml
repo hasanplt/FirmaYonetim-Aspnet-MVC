@@ -1,0 +1,262 @@
+﻿@model FirmaYonetim.Models.ViewModel
+@{
+    ViewBag.Title = "Detail";
+}
+
+<head>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Adres Düzenle</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+
+                    <!-- Edit Card -->
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h3 class="card-title">Adres Düzenleme Formu</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <form id="@Model.address.Id" action="/Address/Save" method="post">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-12">
+                                        <label>Isim</label>
+                                        <input type="text" name="name" class="form-control" value="@Model.address.Name" id="exampleInputEmail1" placeholder="Adrese isim giriniz...">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label>İl</label>
+                                        <input type="text" name="province" class="form-control" value="@Model.address.Province" id="exampleInputEmail1" placeholder="İl ismi giriniz...">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label>İlçe</label>
+                                        <input type="text" name="district" class="form-control" value="@Model.address.District" id="exampleInputEmail1" placeholder="İlçe ismi giriniz...">
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <label for="exampleInputEmail1">Telefon 1</label>
+                                        <input type="text" name="phone1" class="form-control" value="@Model.address.Phone1" id="exampleInputEmail1" placeholder="Telefon Numarası giriniz...">
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <label for="exampleInputEmail1">Telefon 2</label>
+                                        <input type="text" name="phone2" class="form-control" value="@Model.address.Phone2" id="exampleInputEmail1" placeholder="Telefon Numarası giriniz...">
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <label for="exampleInputEmail1">Telefon 3</label>
+                                        <input type="text" name="phone3" class="form-control" value="@Model.address.Phone3" id="exampleInputEmail1" placeholder="Telefon Numarası giriniz...">
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <label for="exampleInputEmail1">Email</label>
+                                        <input type="email" name="email" class="form-control" value="@Model.address.Email" id="exampleInputEmail1" placeholder="Email giriniz...">
+                                    </div>
+                                    <div class="form-group col-12">
+                                        <label>Adres</label>
+                                        <textarea class="form-control" name="address" rows="3" placeholder="Adresi giriniz ...">@Model.address.AddressDetail</textarea>
+                                    </div>
+                                    <input type="hidden" name="Id" value="@Model.address.Id" />
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <a href="#" data-toggle="modal" data-target="#modal-sm" style="float: left; width:49%;" class="btn btn-danger btnDelete">Adresi Sil</a>
+                                <button type="submit" class="btn btn-success" style="float: right; width: 49%;">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+
+                </div>
+
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<div class="modal fade" id="modal-sm">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Veri Silme</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bu Adresi Silmek İstediğine Emin Misin?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeç</button>
+                <a href="#" class="btn btn-danger btnDeleteConfirm">Eminim, Sil</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- jQuery -->
+<script src="~/Content/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jquery-validation -->
+<script src="~/Content/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="~/Content/plugins/jquery-validation/additional-methods.min.js"></script>
+<!-- AdminLTE App -->
+<script src="~/Content/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="~/Content/dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $('#quickForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50
+                },
+                surname: {
+                    required: true,
+                    maxlength: 50
+                },
+                title: {
+                    required: true,
+                    maxlength: 50
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    maxlength: 50
+                },
+                addressId: {
+                    required: true
+                },
+                gsm: {
+                    required: true,
+                    maxlength: 25
+                },
+                phoneNumber: {
+                    required: true,
+                    maxlength: 25
+                },
+                phoneNumberInternal: {
+                    required: true,
+                    maxlength: 25
+                },
+            },
+            messages: {
+                name: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                surname: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                title: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                email: {
+                    required: "Lütfen bir değer giriniz...",
+                    email: "Lütfen email adresi giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                addressId: {
+                    required: "Lütfen bir değer seçiniz..."
+                },
+                gsm: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+                },
+                phoneNumber: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+                },
+                phoneNumberInternal: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+</script>
+
+<!-- DataTables  & Plugins -->
+<script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/jszip/jszip.min.js"></script>
+<script src="~/Content/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/Content/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $("#addressTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#addressTable_wrapper .col-md-6:eq(0)');
+        $("#activityTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#activityTable_wrapper .col-md-6:eq(0)');
+    });
+</script>
+<script>
+    const butons = document.querySelectorAll(".btnDelete");
+    Array.from(butons).forEach(buton => {
+        buton.addEventListener("click", () => {
+            console.log(buton.parentElement.parentElement.id);
+            localStorage.setItem("deleteItemId", buton.parentElement.parentElement.id);
+        });
+    });
+    document.querySelector(".btnDeleteConfirm").addEventListener("click", () => {
+        window.location.href = "/Address/Delete/" + localStorage.getItem("deleteItemId");
+    });
+</script>

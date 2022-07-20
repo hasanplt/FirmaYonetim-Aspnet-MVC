@@ -1,0 +1,203 @@
+﻿@model FirmaYonetim.Models.ViewModel
+@{
+    ViewBag.Title = "Add";
+}
+<head>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Kişi Ekle</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <!-- jquery validation -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Kişi Ekleme Formu</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form id="quickForm" action="/Contact/Add" method="post">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Ad</label>
+                                        <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Ad giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Soyad</label>
+                                        <input type="text" name="surname" class="form-control" id="exampleInputEmail1" placeholder="Soyad giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Ünvan</label>
+                                        <input type="text" name="title" class="form-control" id="exampleInputEmail1" placeholder="Unvan giriniz...">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="exampleInputEmail1">Email</label>
+                                        <input type="text" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email Adresi giriniz...">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label>Bağlı Olacağı Adres</label>
+                                        <select class="form-control select2" style="width: 100%;" name="addressId">
+                                            <option value="">Adres Seçiniz</option>
+                                            @foreach (var address in Model.addressList)
+                                            {
+
+                                                <option value="@address.Id">
+                                                    @address.Name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">GSM</label>
+                                        <input type="text" name="gsm" class="form-control" id="exampleInputEmail1" placeholder="GSM giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Sabit Telefon</label>
+                                        <input type="text" name="landPhone" class="form-control" id="exampleInputEmail1" placeholder="Sabit Telefon giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Sabit Telefon - Dahili</label>
+                                        <input type="text" name="landPhoneInternal" class="form-control" id="exampleInputEmail1" placeholder="Sabit Telefon - Dahili giriniz...">
+                                    </div>
+                                    <input type="hidden" name="createdByUserId" value="@Model.user.Id" />
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-success" style="float:right;">Ekle</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!--/.col (left) -->
+                <!-- right column -->
+                <div class="col-md-6">
+
+                </div>
+                <!--/.col (right) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<!-- jQuery -->
+<script src="~/Content/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jquery-validation -->
+<script src="~/Content/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="~/Content/plugins/jquery-validation/additional-methods.min.js"></script>
+<!-- AdminLTE App -->
+<script src="~/Content/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="~/Content/dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+$(function () {
+  $('#quickForm').validate({
+    rules: {
+        name: {
+            required: true,
+            maxlength: 50
+        },
+        surname: {
+            required: true,
+            maxlength: 50
+        },
+        title: {
+            required: true,
+            maxlength: 50
+        },
+        email: {
+            required: true,
+            email: true,
+            maxlength: 50
+        },
+        addressId: {
+            required: true
+        },
+        gsm: {
+            required: true,
+            maxlength: 25
+        },
+        phoneNumber: {
+            required: true,
+            maxlength: 25
+        },
+        phoneNumberInternal: {
+            required: true,
+            maxlength: 25
+        },
+    },
+    messages: {
+        name: {
+            required: "Lütfen bir değer giriniz...",
+            maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+        },
+        surname: {
+            required: "Lütfen bir değer giriniz...",
+            maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+        },
+        title: {
+            required: "Lütfen bir değer giriniz...",
+            maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+        },
+        email: {
+            required: "Lütfen bir değer giriniz...",
+            email: "Lütfen email adresi giriniz...",
+            maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+        },
+        addressId: {
+            required: "Lütfen bir değer seçiniz..."
+        },
+        gsm: {
+            required: "Lütfen bir değer giriniz...",
+            maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+        },
+        phoneNumber: {
+            required: "Lütfen bir değer giriniz...",
+            maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+        },
+        phoneNumberInternal: {
+            required: "Lütfen bir değer giriniz...",
+            maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+        }
+    },
+    errorElement: 'span',
+    errorPlacement: function (error, element) {
+      error.addClass('invalid-feedback');
+      element.closest('.form-group').append(error);
+    },
+    highlight: function (element, errorClass, validClass) {
+      $(element).addClass('is-invalid');
+    },
+    unhighlight: function (element, errorClass, validClass) {
+      $(element).removeClass('is-invalid');
+    }
+  });
+});
+</script>

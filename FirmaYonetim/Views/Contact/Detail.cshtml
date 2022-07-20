@@ -1,0 +1,299 @@
+﻿@model FirmaYonetim.Models.ViewModel
+@{
+    ViewBag.Title = "Detail";
+}
+
+<head>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Kişiyi Düzenle</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+
+                    <!-- Edit Card -->
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h3 class="card-title">Kişi Düzenleme Formu</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <form id="quickForm" action="/Contact/Save" method="post">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Ad</label>
+                                        <input type="text" name="name" value="@Model.contact.Name" class="form-control" id="exampleInputEmail1" placeholder="Ad giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Soyad</label>
+                                        <input type="text" name="surname" value="@Model.contact.Surname" class="form-control" id="exampleInputEmail1" placeholder="Soyad giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Ünvan</label>
+                                        <input type="text" name="title" value="@Model.contact.Title" class="form-control" id="exampleInputEmail1" placeholder="Unvan giriniz...">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="exampleInputEmail1">Email</label>
+                                        <input type="text" name="email" value="@Model.contact.Email" class="form-control" id="exampleInputEmail1" placeholder="Email Adresi giriniz...">
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label>Bağlı Olacağı Adres</label>
+                                        <select class="form-control select2" style="width: 100%;" name="addressId">
+                                            <option value="">Adres Seçiniz</option>
+                                            @foreach (var address in Model.addressList)
+                                            {
+                                                var selected = "selected = \"selected\"";
+
+                                                <option @if (address.Id == Model.contact.AddressId) { @selected; } value="@address.Id">
+                                                    @address.Name
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">GSM</label>
+                                        <input type="text" name="gsm" value="@Model.contact.GSM" class="form-control" id="exampleInputEmail1" placeholder="GSM giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Sabit Telefon</label>
+                                        <input type="text" name="landPhone" value="@Model.contact.LandPhone" class="form-control" id="exampleInputEmail1" placeholder="Sabit Telefon giriniz...">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="exampleInputEmail1">Sabit Telefon - Dahili</label>
+                                        <input type="text" name="landPhoneInternal" value="@Model.contact.LandPhoneInternal" class="form-control" id="exampleInputEmail1" placeholder="Sabit Telefon - Dahili giriniz...">
+                                    </div>
+                                    <input type="hidden" name="userId" value="@Model.contact.Id" />
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <a href="/Contact/Delete/@Model.contact.Id" class="btn btn-danger" style="float:left; width: 49%;">Kişiyi Sil</a>
+                                <button type="submit" class="btn btn-success" style="float: right; width: 49%;">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+
+
+                </div>
+                <!--/.col (left) -->
+                <!-- right column -->
+                <div class="col-md-12">
+
+                    <!-- Activity Card -->
+                    <div class="card card-red">
+                        <div class="card-header">
+                            <h3 class="card-title">Kişiyle İlgili Tüm Aktiviteler</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="activityTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Aktivite Tipi</th>
+                                        <th>Firma</th>
+                                        <th>Adres</th>
+                                        <th>Tarih</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.contact.ActivityList)
+                                    {
+                                        <tr>
+                                            <td>@activity.ActivityType.Text</td>
+                                            <td>@activity.Company.Name</td>
+                                            <td>@activity.Address.Name</td>
+                                            <td>@activity.Date</td>
+                                            <td>
+                                                @switch (activity.Status)
+                                                {
+                                                    case 0:
+                                                        <button class="btn btn-warning">Bekliyor</button>
+                                                        break;
+                                                    case 1:
+                                                        <button class="btn btn-danger">İptal Oldu</button>
+                                                        break;
+                                                    case 2:
+                                                        <button class="btn btn-success">Başarılı</button>
+                                                        break;
+                                                    case 3:
+                                                        <button class="btn btn-primary">Başarısız</button>
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="/Activity/Detail/@activity.Id" class="btn btn-primary">Detay</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!--/.col (right) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<!-- jQuery -->
+<script src="~/Content/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jquery-validation -->
+<script src="~/Content/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="~/Content/plugins/jquery-validation/additional-methods.min.js"></script>
+<!-- AdminLTE App -->
+<script src="~/Content/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="~/Content/dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $('#quickForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50
+                },
+                surname: {
+                    required: true,
+                    maxlength: 50
+                },
+                title: {
+                    required: true,
+                    maxlength: 50
+                },
+                email: {
+                    required: true,
+                    email: true,
+                    maxlength: 50
+                },
+                addressId: {
+                    required: true
+                },
+                gsm: {
+                    required: true,
+                    maxlength: 25
+                },
+                phoneNumber: {
+                    required: true,
+                    maxlength: 25
+                },
+                phoneNumberInternal: {
+                    required: true,
+                    maxlength: 25
+                },
+            },
+            messages: {
+                name: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                surname: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                title: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                email: {
+                    required: "Lütfen bir değer giriniz...",
+                    email: "Lütfen email adresi giriniz...",
+                    maxlength: "Girdiğiniz Unvan 50 karakterden uzun olamaz!.."
+                },
+                addressId: {
+                    required: "Lütfen bir değer seçiniz..."
+                },
+                gsm: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+                },
+                phoneNumber: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+                },
+                phoneNumberInternal: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 25 karakterden uzun olamaz!.."
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+</script>
+
+<!-- DataTables  & Plugins -->
+<script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/jszip/jszip.min.js"></script>
+<script src="~/Content/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/Content/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $("#addressTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#addressTable_wrapper .col-md-6:eq(0)');
+        $("#activityTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#activityTable_wrapper .col-md-6:eq(0)');
+    });
+</script>

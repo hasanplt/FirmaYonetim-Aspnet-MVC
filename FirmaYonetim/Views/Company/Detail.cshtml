@@ -1,0 +1,348 @@
+﻿@model FirmaYonetim.Models.ViewModel
+@{
+    ViewBag.Title = "Detail";
+}
+
+<head>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Firmayı Düzenle</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+
+                    <!-- Edit Card -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Firma Düzenleme Formu</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form id="quickForm" method="post" action="/Company/Save">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Oluşturulma Tarihi</label>
+                                    <input type="text" class="form-control" value="@Model.company.CreateDateTime" id="exampleInputEmail1" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Güncellenme Tarihi</label>
+                                    <input type="text" class="form-control" value="@Model.company.UpdateDateTime" id="exampleInputEmail1" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Güncelleyen Kişi</label>
+                                    <input type="text" class="form-control" value="@Model.company.UpdatedByUser.Name @Model.company.UpdatedByUser.Surname" id="exampleInputEmail1" disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Ad</label>
+                                    <input type="text" name="name" class="form-control" value="@Model.company.Name" id="exampleInputEmail1" placeholder="Ad giriniz...">
+                                </div>
+                                <input type="hidden" name="id" value="@Model.company.Id" />
+                                <input type="hidden" name="userId" value="@Model.user.Id" />
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+                    <!-- Users Card -->
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <h3 class="card-title">Firmanın Adreslerine Bağlı Tüm Kişiler</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Isim</th>
+                                        <th>Email</th>
+                                        <th>GSM</th>
+                                        <th>Title</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var contact in Model.company.ContactList)
+                                    {
+                                        <tr>
+                                            <td>@contact.Name @contact.Surname</td>
+                                            <td>@contact.Email</td>
+                                            <td>@contact.GSM</td>
+                                            <td>@contact.Title</td>
+                                            <td><a href="/Contact/Detail/@contact.Id" class="btn btn-primary">Detay</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+                <!--/.col (left) -->
+                <!-- right column -->
+                <div class="col-md-6">
+
+                    <a href="#" data-toggle="modal" data-target="#modal-defaultEkle" class="btn btn-success" style="float:right;">Adres Ekle</a>
+                    <br /><br />
+                    <!-- Address Card -->
+                    <div class="card card-green">
+                        <div class="card-header">
+                            <h3 class="card-title">Firmaya Bağlı Adresler</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="addressTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Isim</th>
+                                        <th>İl</th>
+                                        <th>İlçe</th>
+                                        <th>Email</th>
+                                        <th>Phone 1</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var address in Model.company.AddressList)
+                                    {
+                                        <tr>
+                                            <td>@address.Name</td>
+                                            <td>@address.Province</td>
+                                            <td>@address.District</td>
+                                            <td>@address.Email</td>
+                                            <td>@address.Phone1</td>
+                                            <td><a href="/Address/Detail/@address.Id" class="btn btn-primary">Detay</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                    <!-- Activity Card -->
+                    <div class="card card-red">
+                        <div class="card-header">
+                            <h3 class="card-title">Firmaya Ait Tüm Aktiviteler</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="activityTable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Aktivite Tipi</th>
+                                        <th>Firma</th>
+                                        <th>Adres</th>
+                                        <th>Kişi</th>
+                                        <th>Tarih</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var activity in Model.company.ActivityList)
+                                    {
+                                        <tr>
+                                            <td>@activity.ActivityType.Text</td>
+                                            <td>@activity.Company.Name</td>
+                                            <td>@activity.Address.Name</td>
+                                            <td>@activity.Contact.Name @activity.Contact.Surname</td>
+                                            <td>@activity.Date</td>
+                                            <td>
+                                                @switch (activity.Status)
+                                                {
+                                                    case 0:
+                                                        <button class="btn btn-warning">Bekliyor</button>
+                                                        break;
+                                                    case 1:
+                                                        <button class="btn btn-danger">İptal Oldu</button>
+                                                        break;
+                                                    case 2:
+                                                        <button class="btn btn-success">Başarılı</button>
+                                                        break;
+                                                    case 3:
+                                                        <button class="btn btn-primary">Başarısız</button>
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            </td>
+                                            <td><a href="/Activity/Detail/@activity.Id" class="btn btn-primary">Detay</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!--/.col (right) -->
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+
+<div class="modal fade" id="modal-defaultEkle">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/Address/Add" method="post" id="quickForm">
+                <div class="modal-header">
+                    <h4 class="modal-title">Adres Ekleme Modalı</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <div class="form-group col-12">
+                            <label>Isim</label>
+                            <input type="text" name="name" class="form-control" id="exampleInputEmail1" placeholder="Adrese isim giriniz...">
+                        </div>
+                        <div class="form-group col-6">
+                            <label>İl</label>
+                            <input type="text" name="province" class="form-control" id="exampleInputEmail1" placeholder="İl ismi giriniz...">
+                        </div>
+                        <div class="form-group col-6">
+                            <label>İlçe</label>
+                            <input type="text" name="district" class="form-control" id="exampleInputEmail1" placeholder="İlçe ismi giriniz...">
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="exampleInputEmail1">Telefon 1</label>
+                            <input type="text" name="phone1" class="form-control" id="exampleInputEmail1" placeholder="Telefon Numarası giriniz...">
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="exampleInputEmail1">Telefon 2</label>
+                            <input type="text" name="phone2" class="form-control" id="exampleInputEmail1" placeholder="Telefon Numarası giriniz...">
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="exampleInputEmail1">Telefon 3</label>
+                            <input type="text" name="phone3" class="form-control" id="exampleInputEmail1" placeholder="Telefon Numarası giriniz...">
+                        </div>
+                        <div class="form-group col-3">
+                            <label for="exampleInputEmail1">Email</label>
+                            <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Email giriniz...">
+                        </div>
+                        <div class="form-group col-12">
+                            <label>Adres</label>
+                            <textarea class="form-control" name="address" rows="3" placeholder="Adresi giriniz ..."></textarea>
+                        </div>
+                    </div>
+                    <input type="hidden" name="companyId" value="@Model.company.Id" />
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeç</button>
+                    <button type="submit" class="btn btn-success">Ekle</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- jQuery -->
+<script src="~/Content/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- jquery-validation -->
+<script src="~/Content/plugins/jquery-validation/jquery.validate.min.js"></script>
+<script src="~/Content/plugins/jquery-validation/additional-methods.min.js"></script>
+<!-- AdminLTE App -->
+<script src="~/Content/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="~/Content/dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $('#quickForm').validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 100
+                }
+            },
+            messages: {
+                name: {
+                    required: "Lütfen bir değer giriniz...",
+                    maxlength: "Girdiğiniz Unvan 100 karakterden uzun olamaz!.."
+                }
+            },
+            errorElement: 'span',
+            errorPlacement: function (error, element) {
+                error.addClass('invalid-feedback');
+                element.closest('.form-group').append(error);
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass('is-invalid');
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass('is-invalid');
+            }
+        });
+    });
+</script>
+
+<!-- DataTables  & Plugins -->
+<script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/jszip/jszip.min.js"></script>
+<script src="~/Content/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/Content/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $("#addressTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#addressTable_wrapper .col-md-6:eq(0)');
+        $("#activityTable").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#activityTable_wrapper .col-md-6:eq(0)');
+    });
+</script>

@@ -1,0 +1,263 @@
+﻿@model FirmaYonetim.Models.ViewModel
+@{
+    ViewBag.Title = "Index";
+}
+<head>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/Content/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+</head>
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Aktiviteler</h1>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-orange">
+                        <div class="card-header">
+                            <h3 class="card-title" style="margin-top: 10px;">Aktiviteler Listelenmiştir.</h3>
+                            <a href="/Activity/Add" class="btn btn-success" style="float:right;">Aktivite Ekle</a>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Durum</th>
+                                        <th>Aktivite Tipi</th>
+                                        <th>Firma Ismi</th>
+                                        <th>Adres Ismi</th>
+                                        <th>Kişi Ismi</th>
+                                        <th>Tarih</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activity in Model.activityList)
+                                    {
+                                        <tr id="@activity.Id">
+                                            <td>
+                                                @switch (activity.Status)
+                                                {
+                                                    case 0:
+                                                        <button class="btn btn-warning">Bekliyor</button>
+                                                        break;
+                                                    case 1:
+                                                        <button class="btn btn-danger">İptal Oldu</button>
+                                                        break;
+                                                    case 2:
+                                                        <button class="btn btn-success">Başarılı</button>
+                                                        break;
+                                                    case 3:
+                                                        <button class="btn btn-primary">Başarısız</button>
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            </td>
+                                            <td>@activity.ActivityType.Text</td>
+                                            <td>@activity.Company.Name</td>
+                                            <td>@activity.Address.Name</td>
+                                            <td>@activity.Contact.Name @activity.Contact.Surname</td>
+                                            <td>@activity.Date</td>
+                                            <td style="width: 15%;">
+                                                <a href="/Activity/Detail/@activity.Id" class="btn btn-primary">DETAYLAR</a>
+                                                <a href="#" data-toggle="modal" data-target="#modal-sm" class="btn btn-danger btnDelete">SİL</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Aktivite Tipi</th>
+                                        <th>Firma Ismi</th>
+                                        <th>Adres Ismi</th>
+                                        <th>Kişi Ismi</th>
+                                        <th>Tarih</th>
+                                        <th>Durum</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12">
+                    <div class="card card-red">
+                        <div class="card-header">
+                            <h3 class="card-title" style="margin-top: 10px;">Aktivite Tipleri listelenmiştir.</h3>
+                            <a href="/ActivityType/Add" class="btn btn-success" style="float:right;">Aktivite Tipi Ekle</a>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="activityType" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Eklenme Tarihi</th>
+                                        <th>Isim</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var activityType in Model.activityTypeList)
+                                    {
+                                        <tr id="@activityType.Id">
+                                            <td>@activityType.CreatedDateTime</td>
+                                            <td>@activityType.Text</td>
+                                            <td style="width: 15%;">
+                                                <a href="/ActivityType/Detail/@activityType.Id" class="btn btn-primary">DETAYLAR</a>
+                                                <a href="#" data-toggle="modal" data-target="#modalDelete" class="btn btn-danger btnDelete">SİL</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Eklenme Tarihi</th>
+                                        <th>Isim</th>
+                                        <th>İşlem</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<div class="modal fade" id="modal-sm">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Veri Silme</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bu Aktiviteyi Silmek İstediğine Emin Misin?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeç</button>
+                <a href="#" class="btn btn-danger btnDeleteConfirm">Eminim, Sil</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div class="modal fade" id="modalDelete">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Veri Silme</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Bu Aktivite Tipini Silmek İstediğine Emin Misin?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Vazgeç</button>
+                <a href="#" class="btn btn-danger btnDeleteConfirmActivityType">Eminim, Sil</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- jQuery -->
+<script src="~/Content/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- DataTables  & Plugins -->
+<script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/Content/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="~/Content/plugins/jszip/jszip.min.js"></script>
+<script src="~/Content/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="~/Content/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="~/Content/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<!-- AdminLTE App -->
+<script src="~/Content/dist/js/adminlte.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="~/Content/dist/js/demo.js"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $("#activityType").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["excel", "pdf"]
+        }).buttons().container().appendTo('#activityType_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>
+<script>
+    const butons = document.querySelectorAll(".btnDelete");
+    Array.from(butons).forEach(buton => {
+        buton.addEventListener("click", () => {
+            console.log(buton.parentElement.parentElement.id);
+            localStorage.setItem("deleteItemId", buton.parentElement.parentElement.id);
+        });
+    });
+    document.querySelector(".btnDeleteConfirm").addEventListener("click", () => {
+        window.location.href = "/Activity/Delete/" + localStorage.getItem("deleteItemId");
+    });
+    document.querySelector(".btnDeleteConfirmActivityType").addEventListener("click", () => {
+        window.location.href = "/ActivityType/Delete/" + localStorage.getItem("deleteItemId");
+    });
+</script>
