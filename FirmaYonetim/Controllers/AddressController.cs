@@ -22,7 +22,6 @@ namespace FirmaYonetim.Controllers
 
             User user = PublicFunctions.getUser(conn, Session["user"].ToString());
 
-
             conn.Open();
             conn.Execute("INSERT INTO Address (Name, Province, District, Phone1, Phone2, Phone3, Email, AddressDetail, CompanyId, CreatedByUserId) VALUES (@Name, @Province, @District, @Phone1, @Phone2, @Phone3, @Email, @AddressDetail, @CompanyId, @CreatedByUserId)", new Address() { Name = name, Province= province, District = district, Phone1 = phone1, Phone2 = phone2, Phone3 = phone3, Email = email, AddressDetail = address, CompanyId = companyId, CreatedByUserId = (Guid)user.Id });
             conn.Close();
