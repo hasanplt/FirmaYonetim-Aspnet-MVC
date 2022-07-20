@@ -28,11 +28,12 @@ namespace FirmaYonetim.Controllers
 
             activities = editActivitiesAddDetails(activities);
 
-            ViewModel model = new ViewModel();
-            model.activityTypeList = activityTypes;
-            model.activityList = activities;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                activityTypeList = activityTypes,
+                activityList = activities,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Add()
         {
@@ -46,11 +47,12 @@ namespace FirmaYonetim.Controllers
             
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.activityTypeList = activityTypes;
-            model.companyList = companies;
-            model.user = user;
-            return View(model);
+            return View(new ViewModel()
+            {
+                activityTypeList = activityTypes,
+                companyList = companies,
+                user = user
+            });
         }
         public ActionResult Detail(Guid? Id)
         {
@@ -71,14 +73,15 @@ namespace FirmaYonetim.Controllers
 
             activity.editDateTime = PublicFunctions.dateTimeToStringEdit((DateTime)activity.Date);
 
-            ViewModel model = new ViewModel();
-            model.activityTypeList = activityTypes;
-            model.activity = activity;
-            model.companyList = companies;
-            model.addressList = addresses;
-            model.contactList = contacts;
-            model.user = user;
-            return View(model);
+            return View(new ViewModel()
+            {
+                activityTypeList = activityTypes,
+                activity = activity,
+                companyList = companies,
+                addressList = addresses,
+                contactList = contacts,
+                user = user
+            });
         }
         public ActionResult Delete(Guid? Id)
         {

@@ -37,10 +37,11 @@ namespace FirmaYonetim.Controllers
             Address address = conn.Query<Address>("SELECT * FROM Address WHERE Id = @Id", new Address() { Id = Id}).FirstOrDefault();
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.address = address;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                address = address,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Delete(Guid? Id)
         {

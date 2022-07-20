@@ -50,7 +50,11 @@ namespace FirmaYonetim.Controllers
             model.countActivityWaiting = countActivityWaiting;
             model.countActivityFinish = countActivityFinish;
             model.user = withEmailToUser;
-            return View(model);
+            return View(new ViewModel()
+            {
+                toDoList = toDoList,
+               
+            });
         }
 
         // FUNCTİONS

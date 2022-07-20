@@ -19,9 +19,10 @@ namespace FirmaYonetim.Controllers
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
-            ViewModel model = new ViewModel();
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Detail(Guid? Id)
         {
@@ -32,10 +33,11 @@ namespace FirmaYonetim.Controllers
             ActivityType activityType = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE Id = @Id", new ActivityType() { Id = Id }).FirstOrDefault();
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.activityType = activityType;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                activityType = activityType,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Delete(Guid? Id)
         {
