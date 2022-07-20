@@ -25,10 +25,11 @@ namespace FirmaYonetim.Controllers
 
             ContactList = contactListAddDetails(ContactList);
 
-            ViewModel model = new ViewModel();
-            model.contactList = ContactList;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                contactList = ContactList,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Add()
         {
@@ -41,7 +42,11 @@ namespace FirmaYonetim.Controllers
             ViewModel model = new ViewModel();
             model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
             model.addressList = address;
-            return View(model);
+            return View(new ViewModel()
+            {
+                user = PublicFunctions.getUser(conn, Session["user"].ToString()),
+                addressList = address
+            });
         }
         public ActionResult Detail(Guid? Id)
         {
@@ -58,11 +63,12 @@ namespace FirmaYonetim.Controllers
 
             contactDetail.ActivityList = activityListAddDetails(activityList);
 
-            ViewModel model = new ViewModel();
-            model.addressList = adressList;
-            model.contact = contactDetail;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                addressList = adressList,
+                contact = contactDetail,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Delete(Guid? Id)
         {

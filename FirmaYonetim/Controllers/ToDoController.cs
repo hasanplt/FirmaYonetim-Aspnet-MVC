@@ -26,10 +26,11 @@ namespace FirmaYonetim.Controllers
 
             toDo.EditDateTime = PublicFunctions.dateTimeToStringEdit(toDo.Date);
 
-            ViewModel model = new ViewModel();
-            model.toDo = toDo;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                toDo = toDo,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Delete(Guid? Id)
         {
