@@ -31,12 +31,19 @@ namespace FirmaYonetim.Controllers
                 return Redirect("/");
             }
 
+<<<<<<< HEAD
             toDo.EditDateTime = PublicFunctions.dateTimeToStringEdit(toDo.Date);
             
             return View(new ViewModel()
             {
                 toDo = toDo,
                 user = user
+=======
+            return View(new ViewModel()
+            {
+                toDo = toDo,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+>>>>>>> master
             });
         }
         public ActionResult Delete(Guid? Id)
