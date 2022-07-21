@@ -18,9 +18,11 @@ namespace FirmaYonetim.Controllers
         public ActionResult Index()
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
-            
+
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            List<Contact> ContactList = conn.Query<Contact>("SELECT * FROM Contact WHERE IsDelete = @IsDelete", new Contact() { IsDelete = false }).ToList();
+            List<Contact> ContactList = conn.Query<Contact>("SELECT * FROM Contact WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Contact() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             conn.Close();
 
             ContactList = contactListAddDetails(ContactList);
@@ -28,15 +30,17 @@ namespace FirmaYonetim.Controllers
             return View(new ViewModel()
             {
                 contactList = ContactList,
-                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+                user = user
             });
         }
         public ActionResult Add()
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            List<Address> address = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete", new Address() { IsDelete = false }).ToList();
+            List<Address> address = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Address() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             conn.Close();
 
             return View(new ViewModel()
@@ -50,10 +54,12 @@ namespace FirmaYonetim.Controllers
             if (Id == null) return Redirect("/");
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["User"].ToString());
+
             conn.Open();
 
-            Contact contactDetail = conn.Query<Contact>("SELECT * FROM Contact WHERE Id = @Id and IsDelete = @IsDelete", new Contact() { Id = Id, IsDelete = false }).FirstOrDefault();
-            List<Address> adressList = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete", new Address() { IsDelete = false }).ToList();
+            Contact contactDetail = conn.Query<Contact>("SELECT * FROM Contact WHERE Id = @Id and IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Contact() { Id = Id, IsDelete = false, CreatedByUserId = (Guid)user.Id }).FirstOrDefault();
+            List<Address> adressList = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Address() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             List<Activity> activityList = conn.Query<Activity>("SELECT * FROM Activity WHERE ContactId = @ContactId", new Activity() { ContactId = (Guid)contactDetail.Id }).ToList();
 
             conn.Close();

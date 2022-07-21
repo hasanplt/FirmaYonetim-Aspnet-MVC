@@ -29,8 +29,10 @@ namespace FirmaYonetim.Controllers
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
             if (!Id.HasValue) return Redirect("/Activity");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            ActivityType activityType = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE Id = @Id", new ActivityType() { Id = Id }).FirstOrDefault();
+            ActivityType activityType = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE Id = @Id and CreatedByUserId = @CreatedByUserId", new ActivityType() { Id = Id, CreatedByUserId = user.Id }).FirstOrDefault();
             conn.Close();
 
             return View(new ViewModel()
@@ -44,8 +46,10 @@ namespace FirmaYonetim.Controllers
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
             if (!Id.HasValue) return Redirect("/Activity");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("DELETE FROM ActivityType WHERE Id = @Id", new ActivityType() { Id = Id });
+            conn.Execute("DELETE FROM ActivityType WHERE Id = @Id and CreatedByUserId = @CreatedByUserId", new ActivityType() { Id = Id, CreatedByUserId = user.Id });
             conn.Close();
 
             return Redirect("/Activity");
@@ -57,8 +61,10 @@ namespace FirmaYonetim.Controllers
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("INSERT INTO ActivityType (Text) VALUES (@Text)", new ActivityType() { Text = text });
+            conn.Execute("INSERT INTO ActivityType (Text, CreatedByUserId) VALUES (@Text, CreatedByUserId)", new ActivityType() { Text = text, CreatedByUserId = user.Id });
             conn.Close();
 
             return Redirect("/Activity");
@@ -68,8 +74,10 @@ namespace FirmaYonetim.Controllers
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+            
             conn.Open();
-            conn.Execute("UPDATE ActivityType SET Text = @Text WHERE Id=@Id", new ActivityType() { Id = Id, Text = text });
+            conn.Execute("UPDATE ActivityType SET Text = @Text WHERE Id=@Id and CreatedByUserId=@CreatedByUserId", new ActivityType() { Id = Id, Text = text, CreatedByUserId = user.Id });
             conn.Close();
 
             return Redirect("/ActivityType/Detail/" + Id);

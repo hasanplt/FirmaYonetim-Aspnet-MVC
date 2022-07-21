@@ -32,9 +32,6 @@ namespace FirmaYonetim.Controllers
 
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            model.companyList = companies;
             return View(new ViewModel()
             {
                 user = PublicFunctions.getUser(conn, Session["user"].ToString()),
@@ -46,13 +43,15 @@ namespace FirmaYonetim.Controllers
             if(Id == null) return Redirect("/");
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
 
-            Company company = conn.Query<Company>("SELECT * FROM [Company] WHERE Id = @Id and IsDelete = @IsDelete", new Company() { Id = Id, IsDelete = false }).FirstOrDefault();
+            Company company = conn.Query<Company>("SELECT * FROM [Company] WHERE Id = @Id and IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { Id = Id, IsDelete = false, CreatedByUserId = (Guid)user.Id }).FirstOrDefault();
             if(company == null) return RedirectToAction("Index", "Company");
 
             User UserInfos = conn.Query<User>("SELECT * FROM [User] WHERE Id = @Id", new User() { Id = company.CreatedByUserId }).FirstOrDefault();
-            List<Address> AddressList = conn.Query<Address>("SELECT * FROM [Address] WHERE CompanyId = @CompanyId and IsDelete = @IsDelete", new Address() { CompanyId = (Guid)company.Id, IsDelete = false }).ToList();
+            List<Address> AddressList = conn.Query<Address>("SELECT * FROM [Address] WHERE CompanyId = @CompanyId and IsDelete = @IsDelete", new Address() { CompanyId = (Guid)company.Id, IsDelete = false}).ToList();
             List<Activity> ActivityList = conn.Query<Activity>("SELECT * FROM [Activity] WHERE CompanyId = @CompanyId", new Activity() { CompanyId = (Guid)company.Id}).ToList();
 
             conn.Close();
@@ -64,7 +63,7 @@ namespace FirmaYonetim.Controllers
             return View(new ViewModel()
             {
                 company = company,
-                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+                user = user
             });
         }
         public ActionResult Delete(Guid? Id)
@@ -72,9 +71,11 @@ namespace FirmaYonetim.Controllers
             if (Id == null) return Redirect("/");
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
             
-            conn.Execute("UPDATE Company SET IsDelete = @IsDelete, IsDeleteDateTime = @IsDeleteDateTime WHERE Id = @Id", new Company() { Id=Id, IsDelete=true, IsDeleteDateTime = DateTime.Now });
+            conn.Execute("UPDATE Company SET IsDelete = @IsDelete, IsDeleteDateTime = @IsDeleteDateTime WHERE Id = @Id and CreatedByUserId = @CreatedByUserId", new Company() { Id=Id, IsDelete=true, IsDeleteDateTime = DateTime.Now, CreatedByUserId = (Guid)user.Id });
             Company company = conn.Query<Company>("SELECT * FROM Company WHERE Id = @Id", new Company() { Id = Id }).FirstOrDefault();
 
             conn.Close();
@@ -101,8 +102,12 @@ namespace FirmaYonetim.Controllers
         [HttpPost]
         public ActionResult Save(string name, Guid id, Guid userId)
         {
+            if (Session["user"] == null) return RedirectToAction("Index", "Login");
+
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("UPDATE Company SET Name = @Name, UpdateDateTime = @UpdateDateTime, UpdatedByUserId = @UpdatedByUserId WHERE Id = @Id", new Company() { Name=name, UpdateDateTime = DateTime.Now, UpdatedByUserId = userId, Id=id });
+            conn.Execute("UPDATE Company SET Name = @Name, UpdateDateTime = @UpdateDateTime, UpdatedByUserId = @UpdatedByUserId WHERE Id = @Id and CreatedByUserId = @CreatedByUserId", new Company() { Name=name, UpdateDateTime = DateTime.Now, UpdatedByUserId = userId, Id=id, CreatedByUserId = (Guid)user.Id });
             conn.Close();
 
             return Redirect("/Company/Detail/" + id);

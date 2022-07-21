@@ -19,10 +19,12 @@ namespace FirmaYonetim.Controllers
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
 
-            List<Activity> activities = conn.Query<Activity>("SELECT * FROM Activity").ToList();
-            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete" , new ActivityType() { IsDelete = false }).ToList();
+            List<Activity> activities = conn.Query<Activity>("SELECT * FROM Activity WHERE UserId = @UserId", new Activity() { UserId = (Guid)user.Id}).ToList();
+            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete and CreatedByUserId=@CreatedByUserId", new ActivityType() { IsDelete = false, CreatedByUserId = user.Id }).ToList();
 
             conn.Close();
 
@@ -32,7 +34,7 @@ namespace FirmaYonetim.Controllers
             {
                 activityTypeList = activityTypes,
                 activityList = activities,
-                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+                user = user
             });
         }
         public ActionResult Add()
@@ -42,7 +44,7 @@ namespace FirmaYonetim.Controllers
 
             conn.Open();
             
-            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete", new ActivityType() { IsDelete = false }).ToList();
+            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new ActivityType() { IsDelete = false, CreatedByUserId = user.Id }).ToList();
             List<Company> companies = conn.Query<Company>("SELECT * FROM Company WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             
             conn.Close();
@@ -63,13 +65,18 @@ namespace FirmaYonetim.Controllers
 
             conn.Open();
             
-            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete", new ActivityType() { IsDelete = false }).ToList();
+            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new ActivityType() { IsDelete = false }).ToList();
             List<Company> companies = conn.Query<Company>("SELECT * FROM Company WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
-            Activity activity = conn.Query<Activity>("SELECT * FROM Activity WHERE Id = @Id", new Activity() { Id = Id }).FirstOrDefault();
+            Activity activity = conn.Query<Activity>("SELECT * FROM Activity WHERE Id = @Id and UserId = @UserId", new Activity() { Id = Id, UserId = (Guid)user.Id }).FirstOrDefault();
             List<Address> addresses = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete and CompanyId = @CompanyId", new Address() { IsDelete = false, CompanyId = activity.CompanyId }).ToList();
             List<Contact> contacts = conn.Query<Contact>("SELECT * FROM Contact WHERE IsDelete = @IsDelete and AddressId = @AddressId", new Contact() { IsDelete = false, AddressId = activity.AddressId }).ToList();
             
             conn.Close();
+
+            if(activity == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
 
             activity.editDateTime = PublicFunctions.dateTimeToStringEdit((DateTime)activity.Date);
 
@@ -88,8 +95,10 @@ namespace FirmaYonetim.Controllers
             if (Id == null) return RedirectToAction("Index", "Activity");
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("DELETE FROM Activity WHERE Id = @Id", new Activity() { Id = Id});
+            conn.Execute("DELETE FROM Activity WHERE Id = @Id and UserId = @UserId", new Activity() { Id = Id, UserId = (Guid)user.Id});
             conn.Close();
 
             return Redirect("/Activity");
@@ -101,10 +110,12 @@ namespace FirmaYonetim.Controllers
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+
             DateTime dateParse = PublicFunctions.stringToDateTimeEdit(date);
-            
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("INSERT INTO Activity (ActivityTypeId, CompanyId, AddressId, ContactId, Title, Date, Status, Text) VALUES (@ActivityTypeId, @CompanyId, @AddressId, @ContactId, @Title, @Date, @Status, @Text)", new Activity() { ActivityTypeId = activityTypeId, CompanyId = companyId, AddressId = addressId, ContactId = contactId, Title= title, Date = dateParse, Status = Convert.ToInt32(status), Text = text });
+            conn.Execute("INSERT INTO Activity (ActivityTypeId, CompanyId, AddressId, ContactId, Title, Date, Status, Text, UserId) VALUES (@ActivityTypeId, @CompanyId, @AddressId, @ContactId, @Title, @Date, @Status, @Text, @UserId)", new Activity() { ActivityTypeId = activityTypeId, CompanyId = companyId, AddressId = addressId, ContactId = contactId, Title= title, Date = dateParse, Status = Convert.ToInt32(status), Text = text, UserId = (Guid)user.Id});
             conn.Close();
 
             return Redirect("/Activity");
@@ -115,6 +126,7 @@ namespace FirmaYonetim.Controllers
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
           
             DateTime dateParse = PublicFunctions.stringToDateTimeEdit(date);
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
 
             conn.Open();
             
@@ -124,7 +136,7 @@ namespace FirmaYonetim.Controllers
             if (activity.Status != int.Parse(status)) StatusUpdateDateTime = DateTime.Now;
             else StatusUpdateDateTime = activity.StatusUpdateDateTime;
 
-            conn.Execute("UPDATE Activity SET ActivityTypeId = @ActivityTypeId, CompanyId = @CompanyId, AddressId = @AddressId, ContactId = @ContactId, Title = @Title, Date = @Date, Status = @Status, Text = @Text, StatusUpdateDateTime = @StatusUpdateDateTime WHERE Id = @Id", new Activity() { Id = ActivityId, ActivityTypeId = activityTypeId, CompanyId = companyId, AddressId = addressId, ContactId = contactId, Title = title, Date = dateParse, Status = Convert.ToInt32(status), Text = text, StatusUpdateDateTime = StatusUpdateDateTime });
+            conn.Execute("UPDATE Activity SET ActivityTypeId = @ActivityTypeId, CompanyId = @CompanyId, AddressId = @AddressId, ContactId = @ContactId, Title = @Title, Date = @Date, Status = @Status, Text = @Text, StatusUpdateDateTime = @StatusUpdateDateTime WHERE Id = @Id and UserId=@UserId", new Activity() { Id = ActivityId, ActivityTypeId = activityTypeId, CompanyId = companyId, AddressId = addressId, ContactId = contactId, Title = title, Date = dateParse, Status = Convert.ToInt32(status), Text = text, StatusUpdateDateTime = StatusUpdateDateTime, UserId = (Guid)user.Id });
             
             conn.Close();
             

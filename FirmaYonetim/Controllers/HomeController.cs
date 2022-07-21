@@ -24,7 +24,7 @@ namespace FirmaYonetim.Controllers
             conn.Open();
 
             // Todo List and Edit Details
-            List<ToDoList> toDoList = conn.Query<ToDoList>("SELECT * FROM ToDoList", new ToDoList() { }).ToList();
+            List<ToDoList> toDoList = conn.Query<ToDoList>("SELECT * FROM ToDoList WHERE CreatedByUserId = @CreatedByUserId", new ToDoList() { CreatedByUserId = withEmailToUser.Id }).ToList();
             toDoList = editToDoList(toDoList);
 
             // Wrong Logins Add To User and Delete
@@ -36,10 +36,10 @@ namespace FirmaYonetim.Controllers
             withEmailToUser.UserWrongLoginLogs = userWrongLoginLogs;
 
             // Count Istatics
-            int countCompany = conn.Query<int>("SELECT COUNT(*) FROM Company WHERE IsDelete = @IsDelete", new Company() { IsDelete = false }).FirstOrDefault();
-            int countContact = conn.Query<int>("SELECT COUNT(*) FROM Contact WHERE IsDelete = @IsDelete", new Contact() { IsDelete = false }).FirstOrDefault();
-            int countActivityWaiting = conn.Query<int>("SELECT COUNT(*) FROM Activity WHERE Status = @Status", new Activity() { Status = 0 }).FirstOrDefault();
-            int countActivityFinish = conn.Query<int>("SELECT COUNT(*) FROM Activity WHERE Status != @Status", new Activity() { Status = 0 }).FirstOrDefault();
+            int countCompany = conn.Query<int>("SELECT COUNT(*) FROM Company WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { IsDelete = false, CreatedByUserId = (Guid)withEmailToUser.Id }).FirstOrDefault();
+            int countContact = conn.Query<int>("SELECT COUNT(*) FROM Contact WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Contact() { IsDelete = false, CreatedByUserId = (Guid)withEmailToUser.Id }).FirstOrDefault();
+            int countActivityWaiting = conn.Query<int>("SELECT COUNT(*) FROM Activity WHERE Status = @Status and UserId = @UserId", new Activity() { Status = 0, UserId = (Guid)withEmailToUser.Id }).FirstOrDefault();
+            int countActivityFinish = conn.Query<int>("SELECT COUNT(*) FROM Activity WHERE Status != @Status and UserId = @UserId", new Activity() { Status = 0, UserId = (Guid)withEmailToUser.Id }).FirstOrDefault();
 
             conn.Close();
 
