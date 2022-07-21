@@ -53,6 +53,7 @@ namespace FirmaYonetim.Controllers
                 activityList = activitiesFilter,
                 contactList = contactsFilter,
                 user = user,
+                searchKeyword = searchKeyword
             });
         }
 

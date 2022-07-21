@@ -11,6 +11,7 @@ namespace FirmaYonetim.Models
         public int? countContact { get; set; }
         public int? countActivityWaiting { get; set; }
         public int? countActivityFinish { get; set; }
+        public string searchKeyword { get; set; }
         public User user { get; set; }
         public Company company { get; set; }
         public Contact contact { get; set; }
