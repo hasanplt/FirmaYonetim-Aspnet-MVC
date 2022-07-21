@@ -39,9 +39,6 @@ namespace FirmaYonetim.Controllers
             List<Address> address = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete", new Address() { IsDelete = false }).ToList();
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            model.addressList = address;
             return View(new ViewModel()
             {
                 user = PublicFunctions.getUser(conn, Session["user"].ToString()),
