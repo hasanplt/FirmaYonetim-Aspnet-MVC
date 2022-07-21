@@ -34,11 +34,7 @@ namespace FirmaYonetim.Controllers
             {
                 activityTypeList = activityTypes,
                 activityList = activities,
-<<<<<<< HEAD
                 user = user
-=======
-                user = PublicFunctions.getUser(conn, Session["user"].ToString())
->>>>>>> master
             });
         }
         public ActionResult Add()
@@ -53,13 +49,6 @@ namespace FirmaYonetim.Controllers
             
             conn.Close();
 
-<<<<<<< HEAD
-            ViewModel model = new ViewModel();
-            model.activityTypeList = activityTypes;
-            model.companyList = companies;
-            model.user = user;
-=======
->>>>>>> master
             return View(new ViewModel()
             {
                 activityTypeList = activityTypes,

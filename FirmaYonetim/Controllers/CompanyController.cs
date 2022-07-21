@@ -32,12 +32,6 @@ namespace FirmaYonetim.Controllers
 
             conn.Close();
 
-<<<<<<< HEAD
-=======
-            ViewModel model = new ViewModel();
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            model.companyList = companies;
->>>>>>> master
             return View(new ViewModel()
             {
                 user = PublicFunctions.getUser(conn, Session["user"].ToString()),
@@ -69,11 +63,7 @@ namespace FirmaYonetim.Controllers
             return View(new ViewModel()
             {
                 company = company,
-<<<<<<< HEAD
                 user = user
-=======
-                user = PublicFunctions.getUser(conn, Session["user"].ToString())
->>>>>>> master
             });
         }
         public ActionResult Delete(Guid? Id)

@@ -30,11 +30,7 @@ namespace FirmaYonetim.Controllers
             return View(new ViewModel()
             {
                 contactList = ContactList,
-<<<<<<< HEAD
                 user = user
-=======
-                user = PublicFunctions.getUser(conn, Session["user"].ToString())
->>>>>>> master
             });
         }
         public ActionResult Add()
