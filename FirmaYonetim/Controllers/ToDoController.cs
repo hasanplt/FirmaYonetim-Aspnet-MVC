@@ -20,24 +20,34 @@ namespace FirmaYonetim.Controllers
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
             if (Id == null) return Redirect("/");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            ToDoList toDo = conn.Query<ToDoList>("SELECT * FROM ToDoList WHERE Id=@Id", new ToDoList() { Id = Id }).FirstOrDefault();
+            ToDoList toDo = conn.Query<ToDoList>("SELECT * FROM ToDoList WHERE Id=@Id and CreatedByUserId=@CreatedByUserId", new ToDoList() { Id = Id, CreatedByUserId = user.Id }).FirstOrDefault();
             conn.Close();
 
-            toDo.EditDateTime = PublicFunctions.dateTimeToStringEdit(toDo.Date);
+            if(toDo == null)
+            {
+                return Redirect("/");
+            }
 
-            ViewModel model = new ViewModel();
-            model.toDo = toDo;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            toDo.EditDateTime = PublicFunctions.dateTimeToStringEdit(toDo.Date);
+            
+            return View(new ViewModel()
+            {
+                toDo = toDo,
+                user = user
+            });
         }
         public ActionResult Delete(Guid? Id)
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
             if (Id == null) return Redirect("/");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("DELETE FROM ToDoList WHERE Id = @Id", new ToDoList() { Id = Id });
+            conn.Execute("DELETE FROM ToDoList WHERE Id = @Id and CreatedByUserId=@CreatedByUserId", new ToDoList() { Id = Id, CreatedByUserId = user.Id });
             conn.Close();
 
             return Redirect("/");
@@ -48,10 +58,12 @@ namespace FirmaYonetim.Controllers
         public ActionResult Edit(string text, string date, Guid Id)
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
+
             DateTime dateParse = PublicFunctions.stringToDateTimeEdit(date);
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
 
             conn.Open();
-            conn.Execute("UPDATE ToDoList SET Text = @Text, Date = @Date WHERE Id=@Id", new ToDoList() { Id = Id, Text = text, Date = dateParse });
+            conn.Execute("UPDATE ToDoList SET Text = @Text, Date = @Date WHERE Id=@Id and CreatedByUserId = @CreatedByUserId", new ToDoList() { Id = Id, Text = text, Date = dateParse, CreatedByUserId = user.Id });
             conn.Close();
             
             return Redirect("/ToDo/Edit/" + Id);
@@ -62,8 +74,10 @@ namespace FirmaYonetim.Controllers
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
             DateTime dateParse = PublicFunctions.stringToDateTimeEdit(date);
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            conn.Execute("INSERT INTO ToDoList (Text, Date) VALUES (@Text, @Date)", new ToDoList() { Text = text, Date = dateParse });
+            conn.Execute("INSERT INTO ToDoList (Text, Date, CreatedByUserId) VALUES (@Text, @Date, @CreatedByUserId)", new ToDoList() { Text = text, Date = dateParse, CreatedByUserId = user.Id });
             conn.Close();
 
             return Redirect("/");
@@ -75,9 +89,11 @@ namespace FirmaYonetim.Controllers
             if (Id == null) return View();
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
 
-            ToDoList toDo = conn.Query<ToDoList>("SELECT * FROM ToDoList WHERE Id = @Id", new ToDoList() { Id = Id }).FirstOrDefault();
+            ToDoList toDo = conn.Query<ToDoList>("SELECT * FROM ToDoList WHERE Id = @Id and CreatedByUserId = @CreatedByUserId", new ToDoList() { Id = Id, CreatedByUserId = user.Id }).FirstOrDefault();
             
             toDo.IsDelete = !toDo.IsDelete;
             if (toDo.IsDelete)

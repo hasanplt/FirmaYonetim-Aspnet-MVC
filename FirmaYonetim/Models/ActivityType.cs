@@ -11,6 +11,7 @@ namespace FirmaYonetim.Models
         public string Text { get; set; }
         public bool IsDelete { get; set; }
         public DateTime? IsDeleteDateTime { get; set; }
+        public Guid? CreatedByUserId { get; set; }
         public DateTime CreatedDateTime { get; set; }
 
         public List<Activity> ActivityList { get; set; }

@@ -21,13 +21,14 @@ namespace FirmaYonetim.Controllers
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
             searchKeyword = searchKeyword.ToLower();
+            User user = PublicFunctions.getUser(conn, Session["User"].ToString());
 
             conn.Open();
 
-            List<Company> companies = conn.Query<Company>("SELECT * FROM [Company] WHERE IsDelete = @IsDelete", new Company() { IsDelete = false }).ToList();
-            List<Address> AddressList = conn.Query<Address>("SELECT * FROM [Address] WHERE IsDelete = @IsDelete", new Address() {  IsDelete = false }).ToList();
-            List<Activity> ActivityList = conn.Query<Activity>("SELECT * FROM [Activity]", new Activity() { }).ToList();
-            List<Contact> contactList = conn.Query<Contact>("SELECT * FROM [Contact] WHERE IsDelete = @IsDelete", new Contact() { IsDelete = false }).ToList();
+            List<Company> companies = conn.Query<Company>("SELECT * FROM [Company] WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
+            List<Address> AddressList = conn.Query<Address>("SELECT * FROM [Address] WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Address() {  IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
+            List<Activity> ActivityList = conn.Query<Activity>("SELECT * FROM [Activity] WHERE UserId = @UserId", new Activity() { UserId = (Guid)user.Id }).ToList();
+            List<Contact> contactList = conn.Query<Contact>("SELECT * FROM [Contact] WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Contact() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
 
             ActivityList = addDetailsToActivityList(ActivityList);
 
@@ -47,11 +48,11 @@ namespace FirmaYonetim.Controllers
             List<Contact> contactsFilter = contactList.Where(contact => contact.Name.ToLower().Contains(searchKeyword) || contact.Surname.ToLower().Contains(searchKeyword) || contact.Email.ToLower().Contains(searchKeyword) || contact.GSM.ToLower().Contains(searchKeyword) || contact.Title.ToLower().Contains(searchKeyword) || contact.LandPhone.ToLower().Contains(searchKeyword) || contact.LandPhoneInternal.ToLower().Contains(searchKeyword) || contact.CreatedDateTime.ToString().ToLower().Contains(searchKeyword)).ToList();
 
             return View(new ViewModel() { 
-                companyList=companiesFilter,
-                addressList=addressesFilter,
-                activityList=activitiesFilter,
-                contactList=contactsFilter,
-                user= PublicFunctions.getUser(conn, Session["user"].ToString()),
+                companyList = companiesFilter,
+                addressList = addressesFilter,
+                activityList = activitiesFilter,
+                contactList = contactsFilter,
+                user = user,
             });
         }
 

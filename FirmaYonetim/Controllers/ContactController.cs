@@ -18,51 +18,60 @@ namespace FirmaYonetim.Controllers
         public ActionResult Index()
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
-            
+
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            List<Contact> ContactList = conn.Query<Contact>("SELECT * FROM Contact WHERE IsDelete = @IsDelete", new Contact() { IsDelete = false }).ToList();
+            List<Contact> ContactList = conn.Query<Contact>("SELECT * FROM Contact WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Contact() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             conn.Close();
 
             ContactList = contactListAddDetails(ContactList);
 
-            ViewModel model = new ViewModel();
-            model.contactList = ContactList;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                contactList = ContactList,
+                user = user
+            });
         }
         public ActionResult Add()
         {
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["user"].ToString());
+
             conn.Open();
-            List<Address> address = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete", new Address() { IsDelete = false }).ToList();
+            List<Address> address = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Address() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            model.addressList = address;
-            return View(model);
+            return View(new ViewModel()
+            {
+                user = PublicFunctions.getUser(conn, Session["user"].ToString()),
+                addressList = address
+            });
         }
         public ActionResult Detail(Guid? Id)
         {
             if (Id == null) return Redirect("/");
             if (Session["user"] == null) return RedirectToAction("Index", "Login");
 
+            User user = PublicFunctions.getUser(conn, Session["User"].ToString());
+
             conn.Open();
 
-            Contact contactDetail = conn.Query<Contact>("SELECT * FROM Contact WHERE Id = @Id and IsDelete = @IsDelete", new Contact() { Id = Id, IsDelete = false }).FirstOrDefault();
-            List<Address> adressList = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete", new Address() { IsDelete = false }).ToList();
+            Contact contactDetail = conn.Query<Contact>("SELECT * FROM Contact WHERE Id = @Id and IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Contact() { Id = Id, IsDelete = false, CreatedByUserId = (Guid)user.Id }).FirstOrDefault();
+            List<Address> adressList = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Address() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             List<Activity> activityList = conn.Query<Activity>("SELECT * FROM Activity WHERE ContactId = @ContactId", new Activity() { ContactId = (Guid)contactDetail.Id }).ToList();
 
             conn.Close();
 
             contactDetail.ActivityList = activityListAddDetails(activityList);
 
-            ViewModel model = new ViewModel();
-            model.addressList = adressList;
-            model.contact = contactDetail;
-            model.user = PublicFunctions.getUser(conn, Session["user"].ToString());
-            return View(model);
+            return View(new ViewModel()
+            {
+                addressList = adressList,
+                contact = contactDetail,
+                user = PublicFunctions.getUser(conn, Session["user"].ToString())
+            });
         }
         public ActionResult Delete(Guid? Id)
         {
