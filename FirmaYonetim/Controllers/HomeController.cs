@@ -43,17 +43,14 @@ namespace FirmaYonetim.Controllers
 
             conn.Close();
 
-            ViewModel model = new ViewModel();
-            model.toDoList = toDoList;
-            model.countCompany = countCompany;
-            model.countContact = countContact;
-            model.countActivityWaiting = countActivityWaiting;
-            model.countActivityFinish = countActivityFinish;
-            model.user = withEmailToUser;
             return View(new ViewModel()
             {
                 toDoList = toDoList,
-               
+                countCompany = countCompany,
+                countContact = countContact,
+                countActivityWaiting = countActivityWaiting,
+                countActivityFinish = countActivityFinish,
+                user = withEmailToUser
             });
         }
 
