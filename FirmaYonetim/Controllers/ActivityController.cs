@@ -65,7 +65,7 @@ namespace FirmaYonetim.Controllers
 
             conn.Open();
             
-            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new ActivityType() { IsDelete = false }).ToList();
+            List<ActivityType> activityTypes = conn.Query<ActivityType>("SELECT * FROM ActivityType WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new ActivityType() { IsDelete = false, CreatedByUserId = user.Id }).ToList();
             List<Company> companies = conn.Query<Company>("SELECT * FROM Company WHERE IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { IsDelete = false, CreatedByUserId = (Guid)user.Id }).ToList();
             Activity activity = conn.Query<Activity>("SELECT * FROM Activity WHERE Id = @Id and UserId = @UserId", new Activity() { Id = Id, UserId = (Guid)user.Id }).FirstOrDefault();
             List<Address> addresses = conn.Query<Address>("SELECT * FROM Address WHERE IsDelete = @IsDelete and CompanyId = @CompanyId", new Address() { IsDelete = false, CompanyId = activity.CompanyId }).ToList();
