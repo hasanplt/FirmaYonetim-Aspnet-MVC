@@ -24,7 +24,12 @@ namespace FirmaYonetim.Controllers
 
             User UserInfos = conn.Query<User>("SELECT * FROM [User] WHERE Email = @Email", new User() { Email = Session["user"].ToString() }).FirstOrDefault();
             List<Company> companies = conn.Query<Company>("SELECT * FROM [Company] WHERE CreatedByUserId = @CreatedByUserId and IsDelete = @IsDelete", new Company() { CreatedByUserId = (Guid)UserInfos.Id, IsDelete = false}).ToList();
-            
+            List<SharedCompany> sharedCompanies = conn.Query<SharedCompany>("SELECT * FROM SharedCompany WHERE SeeUserId = @SeeUserId", new SharedCompany() { SeeUserId = (Guid)UserInfos.Id}).ToList();
+            foreach (var sharedCompany in sharedCompanies)
+            {
+                sharedCompany.company = conn.Query<Company>("SELECT * FROM Company WHERE Id = @Id", new Company() { Id = sharedCompany.CompanyId}).FirstOrDefault();
+                sharedCompany.company.CreatedByUser = conn.Query<User>("SELECT * FROM [User] WHERE Id = @Id", new User() { Id = sharedCompany.company.CreatedByUserId }).FirstOrDefault();
+            }
             foreach (var item in companies)
             {
                 item.CreatedByUser = UserInfos;
@@ -35,7 +40,8 @@ namespace FirmaYonetim.Controllers
             return View(new ViewModel()
             {
                 user = PublicFunctions.getUser(conn, Session["user"].ToString()),
-                companyList = companies
+                companyList = companies,
+                sharedCompanyList = sharedCompanies
             });
         }
         public ActionResult Detail(Guid? Id)
@@ -48,13 +54,23 @@ namespace FirmaYonetim.Controllers
             conn.Open();
 
             Company company = conn.Query<Company>("SELECT * FROM [Company] WHERE Id = @Id and IsDelete = @IsDelete and CreatedByUserId = @CreatedByUserId", new Company() { Id = Id, IsDelete = false, CreatedByUserId = (Guid)user.Id }).FirstOrDefault();
-            if(company == null) return RedirectToAction("Index", "Company");
 
             User UserInfos = conn.Query<User>("SELECT * FROM [User] WHERE Id = @Id", new User() { Id = company.CreatedByUserId }).FirstOrDefault();
             List<Address> AddressList = conn.Query<Address>("SELECT * FROM [Address] WHERE CompanyId = @CompanyId and IsDelete = @IsDelete", new Address() { CompanyId = (Guid)company.Id, IsDelete = false}).ToList();
             List<Activity> ActivityList = conn.Query<Activity>("SELECT * FROM [Activity] WHERE CompanyId = @CompanyId", new Activity() { CompanyId = (Guid)company.Id}).ToList();
+            List<User> UserList = conn.Query<User>("SELECT * FROM [User] WHERE Id != @Id", UserInfos).ToList();
+            List<SharedCompany> sharedCompanies = conn.Query<SharedCompany>("SELECT * FROM SharedCompany WHERE CompanyId = @CompanyId", new SharedCompany() { CompanyId = (Guid)company.Id }).ToList();
+
+            foreach (var sharedCompany in sharedCompanies)
+            {
+                User sharedCompanyUser = conn.Query<User>("SELECT * FROM [User] WHERE Id = @Id", new User(){ Id = sharedCompany.SeeUserId }).FirstOrDefault();
+                sharedCompany.seeUser = sharedCompanyUser;
+                UserList = (from userDetail in UserList where userDetail.Id != sharedCompanyUser.Id select userDetail).ToList();
+            }
 
             conn.Close();
+
+            if (company == null) return RedirectToAction("Index", "Company");
 
             ActivityList = activitiesAddDetails(ActivityList);
             List<Contact> contactList = addreessesContactList(AddressList);
@@ -63,6 +79,8 @@ namespace FirmaYonetim.Controllers
             return View(new ViewModel()
             {
                 company = company,
+                userList = UserList,
+                sharedCompanyList = sharedCompanies,
                 user = user
             });
         }

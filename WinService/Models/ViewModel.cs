@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace FirmaYonetim.Models
+namespace WinService.Models
 {
     public class ViewModel
     {

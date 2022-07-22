@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Web;
 
-namespace FirmaYonetim.Models
+namespace WinService.Models
 {
     public class Activity
     {
@@ -22,7 +22,6 @@ namespace FirmaYonetim.Models
         public DateTime CreatedDateTime { get; set; }
         public string editDateTime { get; set; }
         public bool IsMailSend { get; set; }
-        public int silicem { get; set; }
 
         public User User { get; set; }
         public Company Company { get; set; }

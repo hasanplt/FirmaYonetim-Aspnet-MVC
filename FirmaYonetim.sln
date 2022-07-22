@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirmaYonetim", "FirmaYonetim\FirmaYonetim.csproj", "{D6C24342-53ED-40C6-BD26-05E267AFE1EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinService", "WinService\WinService.csproj", "{8142AEF2-42FA-44C7-B6FC-B11AB3E658CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D6C24342-53ED-40C6-BD26-05E267AFE1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6C24342-53ED-40C6-BD26-05E267AFE1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6C24342-53ED-40C6-BD26-05E267AFE1EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8142AEF2-42FA-44C7-B6FC-B11AB3E658CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8142AEF2-42FA-44C7-B6FC-B11AB3E658CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8142AEF2-42FA-44C7-B6FC-B11AB3E658CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8142AEF2-42FA-44C7-B6FC-B11AB3E658CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

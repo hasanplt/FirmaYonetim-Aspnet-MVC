@@ -2020,11 +2020,13 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PublicFunctions.cs" />
     <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Controllers\SharedCompanyController.cs" />
     <Compile Include="Controllers\ToDoController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Connection.cs" />
+    <Compile Include="Models\SharedCompany.cs" />
     <Compile Include="Models\ToDoList.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\ActivityType.cs" />
@@ -2192,6 +2194,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\ToDo\EditStatus.cshtml" />
     <Content Include="Views\ToDo\Edit.cshtml" />
+    <Content Include="Views\SharedCompany\Detail.cshtml" />
+    <Content Include="Views\SharedCompany\AddressDetail.cshtml" />
+    <Content Include="Views\SharedCompany\ContactDetail.cshtml" />
+    <Content Include="Views\SharedCompany\ActivityDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
